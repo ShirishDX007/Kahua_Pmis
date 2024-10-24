@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+<div class="container">
+    {% if projects %}
+        {# Display all projects if 'projects' is provided in the context #}
+        
+        {% for project in projects %}
+            <a href="{% url 'project_detail' project.id %}" class="text-center" style="background-color: rgb(198, 217, 235); padding: 10px; border-radius: 5px; border-radius: 5px;font-style: inherit;">Scope of work in {{ project.name }}</a>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Task Name</th>
+                        <th>Status</th>
+                        <th>Date Created</th>
+                        <th>Start Date</th>
+                        <th>End Date</th>
+                        <th>Assigned To</th>
+                        <th>Actions</th>
+                    </tr>
+
+                </thead>
+                <tbody>
+                    {% for task in project.tasks.all %}
+                        <tr>
+                            <td> 
+                                <a href="{% url 'task_detail' task.id %}" style="color: blue;"><b></b>{{ task.name }}</a>
+                            </td>
+                            <td><span class="task-status {{ task.get_status_display|slugify }}">{{ task.get_status_display }}</span></td>
+                            <td>{{ task.date_created|date:"F d, Y"}}</td>
+                            <td>{{ task.task_start_date|date:"F d, Y"}}</td>
+                            <td >{{ task.task_end_date|date:"F d, Y"}}</td>
+                            <td>{{ task.assigned_to }}</td>
+                            <td>
+                                <a href="{% url 'task_update' task.id %}" class="btn btn-primary">Edit</a>
+                                <a href="{% url 'task_delete' task.id %}" class="btn btn-danger">Delete</a>
+                            </td>
+                        </tr>
+                        
+                    {% empty %}
+                        <p>No tasks found for this project.</p>
+                    {% endfor %}
+                    
+                </tbody>
+            </table>
+            
+        {% empty %}
+            <p>No projects found.</p>
+        {% endfor %}
+    {% elif tasks %}
+        {# Display tasks for a specific project if 'tasks' is provided #}
+        <h2>Tasks for: {{ project.name }}</h2> {# Display project name #}
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Task Name</th>
+                    <th>Status</th>
+                    <th>Date Created</th>
+                    <th >Start Date</th>
+                    <th>End Date</th>
+                    <th>Assigned To</th>
+                    <th> Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for task in tasks %}
+                <tr>
+                    <td> 
+                        <a href="{% url 'task_detail' task.id%}" style="color: blue;"><b></b>{{ task.name }}</a>
+                    </td>
+                    <td><span class="task-status {{ task.get_status_display|slugify }}">{{ task.get_status_display }}</span></td>
+                    <td>{{ task.date_created|date:"F d, Y"}}</td>
+                    <td >{{ task.task_start_date|date:"F d, Y"}}</td>
+                    <td >{{ task.task_end_date|date:"F d, Y"}}</td>
+                    <td>{{ task.assigned_to }}</td>
+                    <td>
+                        <a href="{% url 'task_update' task.id %}" class="btn btn-primary">Edit</a>
+                        <a href="{% url 'task_delete' task.id %}" class="btn btn-danger">Delete</a>
+                    </td>
+                </tr>
+                {% empty %}
+                    <p>No tasks found for this project.</p>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No projects or tasks found.</p>
+    {% endif %}
+    <a href="{% url 'task_create' %}" class="btn btn-primary" style="background-color: yellowgreen; margin: 5px;">+ Add New Task</a>
+</div>
+{% endblock %}

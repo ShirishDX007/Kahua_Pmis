@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="container">
+        
+            
+            <h2 class="text-left" style="font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;"><b>Task Name: </b>{{ task.name }}</h2>
+            
+                <p>Start Date: {{ task.task_start_date }}</p>
+                <p>End Date: {{ task.task_end_date }}</p>
+            
+                <p>Status: {{ task.get_status_display }}</p>
+                <p>Project: {{ task.project.name }}</p>
+                <p>Assigned To: {{task.assigned_to}}</p>
+            
+
+            
+                   
+    </div>
+    
+{% endblock content %}

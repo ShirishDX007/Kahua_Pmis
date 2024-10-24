@@ -1,0 +1,13 @@
+# Ignore operating system files
+.DS_DS_Store
+Thumbs.db
+
+# Ignore build artifacts
+/dist
+/build
+
+# Ignore virtual environments
+/venv
+/env
+.venv
+__pycache__

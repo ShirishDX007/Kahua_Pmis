@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+    <div class="container">
+        <h1>Update Project</h1>
+        <!-- Display success message -->
+        <div id="success-message" style="display:none; color: green;"></div>
+        <form method="post" enctype="multipart/form-data" id="project-update-form">
+            {% csrf_token %}
+            {{form.as_p | crispy}}
+
+           
+            <div class="row">
+                <div class="col-md-6">{{form.name|as_crispy_field}}</div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">${{form.Budget|as_crispy_field}}</div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">{{form.image|as_crispy_field}}</div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">{{form.description|as_crispy_field}}</div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">{{form.start_date|as_crispy_field}}</div>
+                <div class="col-md-6">{{form.end_date|as_crispy_field}}</div>
+            </div>
+            <button type="submit" class="btn btn-primary mt-3">Update</button>
+        </form>
+        <script>
+            document.getElementById('project-update-form').addEventListener('submit', function(e) {
+                e.preventDefault();  // Prevent the default form submission
+            
+                const formData = new FormData(this);  // Collect form data
+            
+                // Submit form using fetch
+                fetch("{% url 'project_update' pk=project.id %}", {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-CSRFToken': getCookie('csrftoken')  // Include CSRF token
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Find the form container
+                        const formContainer = document.getElementById('project-update-form'); 
+
+                        // Create a div for the success message
+                        const successMessageDiv = document.createElement('div');
+                        successMessageDiv.id = 'success-message';
+                        successMessageDiv.style.color = 'green';
+                        successMessageDiv.innerText = data.message;
+
+                        // Insert the success message div at the beginning of the form container
+                        formContainer.prepend(successMessageDiv);
+            
+                        // Step 3: Redirect after 2 seconds to the project list page
+                        setTimeout(function() {
+                            window.location.href = "{% url 'project_list' %}";
+                        }, 1000);  // Adjust the timeout as needed
+                    } else {
+                        // Handle errors (e.g., form validation errors)
+                        alert('Error: ' + JSON.stringify(data.errors));
+                    }
+                })
+                .catch(error => {
+                    console.error('Error updating project:', error);
+                });
+            });
+            
+            // Helper function to get CSRF token
+            function getCookie(name) {
+                let cookieValue = null;
+                if (document.cookie && document.cookie !== '') {
+                    const cookies = document.cookie.split(';');
+                    for (let i = 0; i < cookies.length; i++) {
+                        const cookie = cookies[i].trim();
+                        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                            break;
+                        }
+                    }
+                }
+                return cookieValue;
+            }
+            </script>
+    </div>
+{% endblock content %}

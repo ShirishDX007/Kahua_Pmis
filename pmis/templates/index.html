@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+    <span class="text-center h1">Welcome to Kahua Project Management Information Service</span>
+    <br></br>
+    <img src="{% static 'images/KahuaBanner.jpeg' %}" class="img-fluid" height = "300" style="display: block; margin-left: auto; margin-right: auto;" alt="KahuaBanner image">
+    <br></br>
+    
+    <img src="{% static 'images/Sindalah.jpg' %}" class="img-fluid" width = "900"  height = "700" style="display: block; margin-left: auto; margin-right: auto; " alt="Sindalah image">
+    <br></br>
+    <br></br>
+    {% if user.is_authenticated %}
+        <p class="text-center">You are logged in as {{ user.username }}</p>
+        
+    {% else %}
+    <br></br>
+        <p class="text-center">You are not logged in.</p>
+        <h2 class="text-center" style="color: rosybrown;">Please Login to your Kahua account to access the site.</h2>
+        <br></br>
+        <br></br>
+        <form method="post" action="{% url 'kahua_users:login' %}">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <div class="position-relative">
+                <button class = "btn btn-primary position-absolute top-50 start-50 translate-middle" type="submit">Login</button>
+            </div>
+            
+        </form>
+    {% endif %}
+{% endblock content %}

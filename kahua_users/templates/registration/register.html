@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1 class="text-center">Register</h1>
+<h2>Create an account.</h2>
+
+<form method="post" action="{% url 'kahua_users:register' %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+
+    <button name="submit" class="btn btn-primary">Register</button>
+    <input type="hidden" name="next" value="{{ next }}" />
+</form>
+{% endblock %}
+
+
