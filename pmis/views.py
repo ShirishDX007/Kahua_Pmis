@@ -135,18 +135,21 @@ def task_create(request):
 @permission_required('pmis.can_assign_task', raise_exception=True)
 def task_update(request, task_id):
     task = get_object_or_404(Task, pk=task_id)
+    project = task.project
     if request.method == 'POST':
         form = TaskForm(request.POST, instance=task)
         if form.is_valid():
             if request.user.has_perm('pmis.can_assign_task_to_client', task.assigned_to):
                 form.save()
-                return redirect('task_list', project_id=task.project.id)
+                return JsonResponse({'success': True, 'message': 'Task updated successfully.', 'project_id': task.project.id})
+                #return redirect('task_list', project_id=task.project.id)
             else:
-                messages.error(request, "you dont have permissions to assign tasks.")
-                return redirect('task_update', task_id=task.pk)
+                return JsonResponse({'success': False, 'message': 'You do not have permissions to assign tasks.'})
+                # messages.error(request, "you dont have permissions to assign tasks.")
+                # return redirect('task_update', task_id=task.pk)
     else:
         form = TaskForm(instance=task)
-    context = {'form': form}
+    context = {'form': form, 'task': task, 'project': project}
     return render(request, 'task_update.html', context)
 
 @login_required

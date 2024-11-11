@@ -15,7 +15,6 @@ urlpatterns = [
     path('tasks/', TaskList.as_view()),
     path('api_task/create/', TaskCreate.as_view(), name='api_task_create'),
     path('tasks/<int:pk>/', TaskDetail.as_view()),
-    path('upload_tasks_csv/', upload_tasks_csv.as_view(), name='upload_tasks_csv'),
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 ]

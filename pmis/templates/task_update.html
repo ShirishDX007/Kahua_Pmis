@@ -2,10 +2,60 @@
 {% block content %}
 <div class="container">
     <h1>Update Task</h1>
-    <form method="POST">
+    <form method="POST" id="update-task-form" >
         {% csrf_token %}
         {{ form.as_p }}
         <button type="submit" class="btn btn-primary">Update Task</button>
     </form>
+    <script>
+        document.addEventListener('DOMContentLoaded', function(){
+        const form = document.getElementById('update-task-form');
+        form.addEventListener('submit', function(event){
+            event.preventDefault();
+            const formData = new FormData(form);
+            fetch(window.location.href, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                'X-CSRFToken': getCookie('csrf_token'),
+            }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+            if (data.success) {
+                alert(data.message); // or display message in HTML
+                window.location.href = `/project/${ data.project_id }/tasks/`; // Redirect if needed
+            } else {
+                console.error('Validation errors:', data.errors);
+            }
+            })
+            .catch(error => {
+                console.error('Error updating task:', error);
+            });
+        
+        });
+    });
+    //Helper function to get csrf token
+        function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    </script>
 </div>
 {% endblock %}
